@@ -27,6 +27,9 @@ Resources:
         Variables:
           SENDER: !Ref Sender
           RECIPIENT: !Ref Recipient
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: "*"
 
       Events:
         Daily:
