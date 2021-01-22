@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  grassley-schedule-tracker
+
+  AWS Lambda for daily emails of Senator Grassley's Schedule
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Parameters:
+  Sender:
+    Type: String
+  Recipient:
+    Type: String
+
+Resources:
+  ScheduleTracker:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: schedule_tracker/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          SENDER: !Ref Sender
+          RECIPIENT: !Ref Recipient
+
+      Events:
+        Daily:
+          Type: Schedule
+          Properties:
+            Enabled: True
+            Schedule: "cron(0 12 * * ? *)"
